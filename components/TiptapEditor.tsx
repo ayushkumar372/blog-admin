@@ -7,7 +7,7 @@ import Underline from "@tiptap/extension-underline";
 import TextAlign from "@tiptap/extension-text-align";
 import Highlight from "@tiptap/extension-highlight";
 import Placeholder from "@tiptap/extension-placeholder";
-import { api } from "@/lib/api";
+import { openCloudinaryWidget } from "@/lib/cloudinary";
 import { useCallback } from "react";
 
 interface Props {
@@ -62,21 +62,11 @@ export default function TiptapEditor({ content, onChange }: Props) {
     },
   });
 
-  const addImage = useCallback(async () => {
-    const input = document.createElement("input");
-    input.type = "file";
-    input.accept = "image/*";
-    input.onchange = async (e) => {
-      const file = (e.target as HTMLInputElement).files?.[0];
-      if (!file || !editor) return;
-      try {
-        const { url } = await api.uploadImage(file);
-        editor.chain().focus().setImage({ src: url }).run();
-      } catch {
-        alert("Image upload failed");
-      }
-    };
-    input.click();
+  const addImage = useCallback(() => {
+    if (!editor) return;
+    openCloudinaryWidget((url) => {
+      editor.chain().focus().setImage({ src: url }).run();
+    });
   }, [editor]);
 
   const setLink = useCallback(() => {

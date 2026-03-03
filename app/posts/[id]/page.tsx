@@ -4,6 +4,7 @@ import { useRouter, useParams } from "next/navigation";
 import AdminLayout from "@/components/AdminLayout";
 import TiptapEditor from "@/components/TiptapEditor";
 import { api } from "@/lib/api";
+import { openCloudinaryWidget } from "@/lib/cloudinary";
 
 interface Post {
   _id: string;
@@ -125,13 +126,29 @@ export default function EditPostPage() {
             className="w-full bg-gray-900 border border-gray-700 text-white text-2xl font-bold rounded-xl px-5 py-4 focus:outline-none focus:border-blue-500 placeholder:text-gray-600"
           />
 
-          <input
-            type="text"
-            placeholder="Cover image URL (optional)"
-            value={coverImage}
-            onChange={(e) => setCoverImage(e.target.value)}
-            className="w-full bg-gray-900 border border-gray-700 text-white rounded-xl px-5 py-3 text-sm focus:outline-none focus:border-blue-500 placeholder:text-gray-600"
-          />
+          <div className="flex gap-2">
+            <input
+              type="text"
+              placeholder="Cover image URL (optional)"
+              value={coverImage}
+              onChange={(e) => setCoverImage(e.target.value)}
+              className="flex-1 bg-gray-900 border border-gray-700 text-white rounded-xl px-5 py-3 text-sm focus:outline-none focus:border-blue-500 placeholder:text-gray-600"
+            />
+            <button
+              type="button"
+              onClick={() => openCloudinaryWidget((url) => setCoverImage(url))}
+              className="px-4 py-3 rounded-xl text-sm font-medium bg-blue-600 hover:bg-blue-500 text-white transition-colors whitespace-nowrap"
+            >
+              Upload Image
+            </button>
+          </div>
+          {coverImage && (
+            <img
+              src={coverImage}
+              alt="Cover preview"
+              className="h-40 w-full object-cover rounded-xl border border-gray-700"
+            />
+          )}
 
           <TiptapEditor content={content} onChange={setContent} />
 
